@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     }
-});
+},{timestamps: true}
+);
 
 
 // Hash password before saving user to DB
@@ -39,7 +40,7 @@ userSchema.pre("save", async function (next) {
 //compare  password function
 userSchema.methods.comparePassword = async function (userPassword) {
 
-    return await argon2.verify(userPassword, this.password);
+    return await argon2.verify(this.password, userPassword);
 
 }
 
