@@ -36,6 +36,13 @@ userSchema.pre("save", async function (next) {
     }
 });
 
+//compare  password function
+userSchema.methods.comparePassword = async function (userPassword) {
+
+    return await argon2.verify(userPassword, this.password);
+
+}
+
 const User = mongoose.model("User", userSchema);
 
 export default User;
