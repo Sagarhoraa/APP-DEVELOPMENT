@@ -1,4 +1,5 @@
 import mongoose, { MongooseError } from  "mongoose";
+import argon2 from "argon2";
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -19,6 +20,19 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String,
         default: ""
+    }
+});
+
+
+// Hash password before saving user to DB
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
+
+    try {
+        this.password = await argon2.hash(this.password);
+        next();
+    } catch (err) {
+        next(err);
     }
 });
 
